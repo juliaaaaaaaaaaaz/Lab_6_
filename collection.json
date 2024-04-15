@@ -1,0 +1,70 @@
+[
+  {
+    "id": 5694603883523550720,
+    "name": "34",
+    "coordinates": {
+      "x": 34.0,
+      "y": 34.0
+    },
+    "creationDate": "Apr 10, 2024, 9:09:42 AM",
+    "minimalPoint": 34,
+    "maximumPoint": 34,
+    "difficulty": "EASY",
+    "discipline": {
+      "name": "34",
+      "practiceHours": 34,
+      "selfStudyHours": 34
+    }
+  },
+  {
+    "id": 8044479352832252362,
+    "name": "34",
+    "coordinates": {
+      "x": 34.0,
+      "y": 55.0
+    },
+    "creationDate": "Apr 10, 2024, 9:35:18 AM",
+    "minimalPoint": 55,
+    "maximumPoint": 55,
+    "difficulty": "EASY",
+    "discipline": {
+      "name": "22",
+      "practiceHours": 22,
+      "selfStudyHours": 22
+    }
+  },
+  {
+    "id": 3800630262124597015,
+    "name": "23",
+    "coordinates": {
+      "x": 23.0,
+      "y": 23.0
+    },
+    "creationDate": "Apr 11, 2024, 7:43:50 PM",
+    "minimalPoint": 23,
+    "maximumPoint": 23,
+    "difficulty": "EASY",
+    "discipline": {
+      "name": "34",
+      "practiceHours": 34,
+      "selfStudyHours": 34
+    }
+  },
+  {
+    "id": 1497619534803536992,
+    "name": "12",
+    "coordinates": {
+      "x": 12.0,
+      "y": 12.0
+    },
+    "creationDate": "Apr 12, 2024, 3:36:03 PM",
+    "minimalPoint": 12,
+    "maximumPoint": 12,
+    "difficulty": "EASY",
+    "discipline": {
+      "name": "12",
+      "practiceHours": 12,
+      "selfStudyHours": 12
+    }
+  }
+]
