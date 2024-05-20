@@ -1,8 +1,6 @@
 package org.example.commandArguments;
 
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
@@ -10,7 +8,7 @@ import java.io.Serializable;
  */
 
 
-public record Response(boolean success, String message) implements Serializable {
+public record Response(boolean success, String message, int packetNumber, int totalPackets) implements Serializable {
     /**
      * Конструктор для создания ответа сервера.
      *

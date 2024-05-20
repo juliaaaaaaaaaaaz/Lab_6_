@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import org.example.data.LabWork;
 import org.example.data.Messages;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -18,16 +19,18 @@ public class LabWorkCollection {
     private final String fileName;
     private Set<LabWork> labWorkSet;
     private final LocalDateTime initializationDate;
+    private final DataBaseManipulator dataBaseManipulator;
 
     /**
      * Конструктор коллекции LabWork.
      *
      * @param fileName Имя файла для загрузки и сохранения коллекции.
      */
-    public LabWorkCollection(String fileName) {
+    public LabWorkCollection(String fileName, DataBaseManipulator dataBaseManipulator) {
         this.fileName = fileName;
         this.labWorkSet = new LinkedHashSet<>();
         this.initializationDate = LocalDateTime.now();
+        this.dataBaseManipulator = dataBaseManipulator;
         System.err.println("LabWorkCollection created");
         loadFromFile();
     }
@@ -36,9 +39,8 @@ public class LabWorkCollection {
      * Загружает коллекцию из файла, используя утилиту JsonUtil.
      */
     private void loadFromFile() {
-        Type collectionType = new TypeToken<Set<LabWork>>() {
-        }.getType();
-        labWorkSet = JsonUtil.loadFromFile(fileName, collectionType);
+        ReadFromDataBase readFromDataBase = new ReadFromDataBase();
+        labWorkSet = readFromDataBase.read(dataBaseManipulator);
         if (labWorkSet == null) {
             labWorkSet = new LinkedHashSet<>();
             System.out.println(Messages.STARTING_WITH_EMPTY_COLLECTION.getMessage());
@@ -104,6 +106,10 @@ public class LabWorkCollection {
         return new LinkedHashSet<>(labWorkSet);
     }
 
+    public void setLabWorks(LinkedHashSet<LabWork> newLabWork){
+        labWorkSet = newLabWork;
+    }
+
     public LabWork findById(long id) {
         return labWorkSet.stream()
                 .filter(labWork -> labWork.getId() == id)
@@ -130,6 +136,11 @@ public class LabWorkCollection {
             return true;
         }
         return false;
+    }
+
+    public boolean checkAuthor(long id){
+        LabWork findById = findById(id);
+        return findById != null && findById.getAuthor().equals(dataBaseManipulator.getUserName());
     }
 
     /**

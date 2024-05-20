@@ -5,6 +5,7 @@ import org.example.utils.LabWorkCollection;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -12,14 +13,17 @@ import java.util.stream.Collectors;
  */
 public class PrintFieldDescendingDisciplineCommand extends Command {
     private final LabWorkCollection labWorkCollection;
+    private final ReadWriteLock READWRITELOCK;
 
     /**
      * Конструктор команды PrintFieldDescendingDiscipline.
      *
      * @param labWorkCollection Коллекция, над которой проводится операция.
+     * @param READWRITELOCK
      */
-    public PrintFieldDescendingDisciplineCommand(LabWorkCollection labWorkCollection) {
+    public PrintFieldDescendingDisciplineCommand(LabWorkCollection labWorkCollection, ReadWriteLock READWRITELOCK) {
         this.labWorkCollection = labWorkCollection;
+        this.READWRITELOCK = READWRITELOCK;
     }
 
     /**
@@ -29,10 +33,15 @@ public class PrintFieldDescendingDisciplineCommand extends Command {
      */
     @Override
     public String execute(List<Object> args) {
-        return labWorkCollection.getLabWorks().stream()
-                .filter(labWork -> labWork.getDiscipline() != null)
-                .sorted(Comparator.comparingInt((LabWork lw) -> lw.getDiscipline().getPracticeHours()).reversed())
-                .map(lw -> lw.getDiscipline().getName() + " - Practice hours: " + lw.getDiscipline().getPracticeHours())
-                .collect(Collectors.joining("\n"));
+        READWRITELOCK.readLock().lock();
+        try {
+            return labWorkCollection.getLabWorks().stream()
+                    .filter(labWork -> labWork.getDiscipline() != null)
+                    .sorted(Comparator.comparingInt((LabWork lw) -> lw.getDiscipline().getPracticeHours()).reversed())
+                    .map(lw -> lw.getDiscipline().getName() + " - Practice hours: " + lw.getDiscipline().getPracticeHours())
+                    .collect(Collectors.joining("\n"));
+        } finally {
+            READWRITELOCK.readLock().unlock();
+        }
     }
 }

@@ -4,6 +4,7 @@ package org.example.commands;
 import org.example.utils.LabWorkCollection;
 
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 
 
 /**
@@ -11,14 +12,17 @@ import java.util.List;
  */
 public class ShowCommand extends Command {
     private final LabWorkCollection labWorkCollection;
+    private final ReadWriteLock READWRITELOCK;
 
     /**
      * Конструктор команды Show.
      *
      * @param labWorkCollection Коллекция для отображения.
+     * @param READWRITELOCK
      */
-    public ShowCommand(LabWorkCollection labWorkCollection) {
+    public ShowCommand(LabWorkCollection labWorkCollection, ReadWriteLock READWRITELOCK) {
         this.labWorkCollection = labWorkCollection;
+        this.READWRITELOCK = READWRITELOCK;
     }
 
     /**
@@ -28,6 +32,14 @@ public class ShowCommand extends Command {
      */
     @Override
     public String execute(List<Object> args) {
-        return labWorkCollection.show();
+        READWRITELOCK.readLock().lock();
+        System.out.println(labWorkCollection.show());
+        try {
+            if (labWorkCollection.show().equals(""))
+                return "Collection is empty";
+            return labWorkCollection.show();
+        } finally {
+            READWRITELOCK.readLock().unlock();
+        }
     }
 }

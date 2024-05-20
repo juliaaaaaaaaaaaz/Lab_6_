@@ -26,7 +26,9 @@ public class HelpCommand extends Command {
             Map.entry("group_counting_by_discipline", "group_counting_by_discipline : group the elements of the collection by the value of the discipline field, display the number of elements in each group"),
             Map.entry("print_field_descending_discipline", "print_field_descending_discipline : print the value of the discipline field of all elements in descending order"),
             Map.entry("print_ascending", "print_ascending : print the value of the difficulty field of all elements in ascending order"),
-            Map.entry("exit", "exit : exit the program")
+            Map.entry("exit", "exit : exit the program"),
+            Map.entry("login", "login: login in account"),
+            Map.entry("register", "register: register new user")
 
     );
 

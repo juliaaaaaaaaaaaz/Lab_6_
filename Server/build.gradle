@@ -16,17 +16,14 @@ dependencies {
     implementation(project(":common"))
 
     implementation("com.google.code.gson:gson:2.8.9")
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
 test {
     useJUnitPlatform()
-}
-jar {
-    manifest {
-        attributes 'Main-Class': 'org.example.Main'
-    }
 }
 
 shadowJar {
@@ -35,4 +32,17 @@ shadowJar {
     archiveClassifier = ''
     configurations = [project.configurations.runtimeClasspath]
 
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.example.Main',
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+        )
+    }
+    from {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

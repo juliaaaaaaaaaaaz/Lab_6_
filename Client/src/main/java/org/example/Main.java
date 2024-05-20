@@ -1,14 +1,16 @@
 package org.example;
 
 import org.example.client.ClientManager;
-import org.example.client.CommandInterpreter;
-import org.example.client.Task;
+import org.example.commandArguments.CommandArgument;
 import org.example.commandArguments.CommandData;
-import org.example.commandArguments.Response;
+import org.example.commands.Command;
+import org.example.commands.CommandFactory;
 import org.example.data.Messages;
-import org.example.utils.LabWorkReader;
-import org.example.utils.Validator;
+import org.example.commands.LoginAndRegistration;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -22,30 +24,28 @@ public class Main {
      * @param args Аргументы командной строки. В этом приложении не используются.
      */
     public static void main(String[] args) {
-        Validator validator = new Validator();
-        LabWorkReader labWorkReader = new LabWorkReader(validator);
-        CommandInterpreter commandInterpreter = new CommandInterpreter(labWorkReader);
 
         System.out.println(Messages.WELCOME.getMessage());
         System.out.println(Messages.ENTER_HELP.getMessage());
-
         Scanner scanner = new Scanner(System.in);
+
+        ClientManager clientManager = new ClientManager("localhost", 12345);
+
+        LoginAndRegistration loginAndRegistration = new LoginAndRegistration();
+        loginAndRegistration.loginAndRegistration(clientManager);
+
+
         while (true) {
-            System.out.print("> ");
+            System.out.print(String.format("%s > ", loginAndRegistration.getUsername()));
             String input = scanner.nextLine().trim();
             if ("exit".equalsIgnoreCase(input)) {
                 break;
             }
 
             try {
-                CommandData commandData = commandInterpreter.interpret(input, scanner);
-
-                ClientManager clientManager = new ClientManager("localhost", 12345);
                 clientManager.connect();
-
-                Task task = new Task(commandData);
-                Response response = task.execute(clientManager);
-                System.out.println(response.message());
+                Command command = CommandFactory.getCommand(input, scanner);
+                command.execute(clientManager, loginAndRegistration.getUsername(), loginAndRegistration.getPswd());
 
                 clientManager.disconnect();
             } catch (Exception e) {

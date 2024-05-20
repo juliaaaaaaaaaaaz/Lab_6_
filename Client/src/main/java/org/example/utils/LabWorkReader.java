@@ -165,6 +165,7 @@ public class LabWorkReader {
         long maximumPoint = readMaximumPoint(inputSupplier);
         Difficulty difficulty = readDifficulty(inputSupplier);
         Discipline discipline = readDiscipline(inputSupplier);
-        return new LabWork(id, name, coordinates, creationDate, minimalPoint, maximumPoint, difficulty, discipline);
+        String author = "";
+        return new LabWork(id, name, coordinates, creationDate, minimalPoint, maximumPoint, difficulty, discipline, author);
     }
 }

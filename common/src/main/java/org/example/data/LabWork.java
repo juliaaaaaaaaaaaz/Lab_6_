@@ -22,8 +22,9 @@ public class LabWork implements Serializable {
     private long maximumPoint; //Значение поля должно быть больше 0
     private Difficulty difficulty; //Поле не может быть null
     private Discipline discipline; //Поле может быть null
+    private String author;
 
-    public LabWork(long id, String name, Coordinates coordinates, Date creationDate, Long minimalPoint, long maximumPoint, Difficulty difficulty, Discipline discipline) {
+    public LabWork(long id, String name, Coordinates coordinates, Date creationDate, Long minimalPoint, long maximumPoint, Difficulty difficulty, Discipline discipline, String author) {
         this.id = id;
         this.name = name;
         this.coordinates = coordinates;
@@ -32,6 +33,7 @@ public class LabWork implements Serializable {
         this.maximumPoint = maximumPoint;
         this.difficulty = difficulty;
         this.discipline = discipline;
+        this.author = author;
     }
 
     public String detailedToString() {
@@ -44,6 +46,7 @@ public class LabWork implements Serializable {
                 ", maximumPoint=" + maximumPoint +
                 ", difficulty=" + difficulty +
                 ", discipline=" + discipline +
+                ", author=" + author +
                 '}';
     }
 }

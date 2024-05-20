@@ -2,6 +2,11 @@ package org.example;
 
 import org.example.di.DIContainer;
 import org.example.server.ServerManager;
+import org.example.utils.DataBaseConnector;
+import org.example.utils.DataBaseManipulator;
+
+import javax.xml.crypto.Data;
+import java.io.IOException;
 
 /**
  * Главный класс для запуска серверной части приложения.
@@ -14,9 +19,11 @@ public class Main {
      * @param args Аргументы командной строки, не используются в данной программе.
      */
 
-    public static void main(String[] args) {
-        DIContainer diContainer = new DIContainer();
+    public static void main(String[] args) throws IOException {
+        DataBaseManipulator dataBaseManipulator = new DataBaseConnector().connect();
+        DIContainer diContainer = new DIContainer(dataBaseManipulator);
         ServerManager serverManager = diContainer.getService(ServerManager.class);
+        serverManager.setDataBaseManipulator(dataBaseManipulator);
         serverManager.startServer();
     }
 }

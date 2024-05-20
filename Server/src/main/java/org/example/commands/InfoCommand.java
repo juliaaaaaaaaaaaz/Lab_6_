@@ -4,6 +4,7 @@ package org.example.commands;
 import org.example.utils.LabWorkCollection;
 
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 
 
 /**
@@ -11,14 +12,17 @@ import java.util.List;
  */
 public class InfoCommand extends Command {
     private final LabWorkCollection labWorkCollection;
+    private final ReadWriteLock READWRITELOCK;
 
     /**
      * Конструктор команды Info.
      *
      * @param labWorkCollection Коллекция, о которой выводится информация.
+     * @param READWRITELOCK
      */
-    public InfoCommand(LabWorkCollection labWorkCollection) {
+    public InfoCommand(LabWorkCollection labWorkCollection, ReadWriteLock READWRITELOCK) {
         this.labWorkCollection = labWorkCollection;
+        this.READWRITELOCK = READWRITELOCK;
     }
 
     /**
@@ -28,6 +32,11 @@ public class InfoCommand extends Command {
      */
     @Override
     public String execute(List<Object> args) {
-        return labWorkCollection.getInfo();
+        READWRITELOCK.readLock().lock();
+        try {
+            return labWorkCollection.getInfo();
+        } finally {
+            READWRITELOCK.readLock().unlock();
+        }
     }
 }

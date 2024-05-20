@@ -5,6 +5,7 @@ import org.example.utils.LabWorkCollection;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -12,14 +13,17 @@ import java.util.stream.Collectors;
  */
 public class PrintAscendingCommand extends Command {
     private final LabWorkCollection labWorkCollection;
+    private final ReadWriteLock READWRITELOCK;
 
     /**
      * Конструктор команды PrintAscending.
      *
      * @param labWorkCollection Коллекция для операции.
+     * @param READWRITELOCK
      */
-    public PrintAscendingCommand(LabWorkCollection labWorkCollection) {
+    public PrintAscendingCommand(LabWorkCollection labWorkCollection, ReadWriteLock READWRITELOCK) {
         this.labWorkCollection = labWorkCollection;
+        this.READWRITELOCK = READWRITELOCK;
     }
 
     /**
@@ -29,9 +33,14 @@ public class PrintAscendingCommand extends Command {
      */
     @Override
     public String execute(List<Object> args) {
-        return labWorkCollection.getLabWorks().stream()
-                .sorted(Comparator.comparingInt(lw -> lw.getDiscipline().getPracticeHours()))
-                .map(LabWork::detailedToString)
-                .collect(Collectors.joining("\n"));
+        READWRITELOCK.readLock().lock();
+        try {
+            return labWorkCollection.getLabWorks().stream()
+                    .sorted(Comparator.comparingInt(lw -> lw.getDiscipline().getPracticeHours()))
+                    .map(LabWork::detailedToString)
+                    .collect(Collectors.joining("\n"));
+        } finally {
+            READWRITELOCK.readLock().unlock();
+        }
     }
 }

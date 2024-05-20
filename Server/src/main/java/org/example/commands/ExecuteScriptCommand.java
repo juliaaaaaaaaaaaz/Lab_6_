@@ -72,7 +72,7 @@ public class ExecuteScriptCommand extends Command {
             if (commandLine.isEmpty() || commandLine.startsWith("#")) continue;
 
             CommandData commandData = interpretCommandLine(commandLine, scanner);
-            String output = commandExecutor.executeCommand(commandData.commandName(), commandData.arguments());
+            String output = commandExecutor.executeCommand(commandData.getCommandName(), commandData.getArguments());
             result.append(output).append("\n");
         }
 
@@ -80,48 +80,49 @@ public class ExecuteScriptCommand extends Command {
         return result.toString();
     }
 
-    /**
-     * Интерпретирует строку команды из скрипта, создавая CommandData для последующего выполнения.
-     *
-     * @param commandLine Строка команды для интерпретации.
-     * @param scanner     Scanner, используемый для чтения дополнительных данных команды из скрипта.
-     * @return Объект CommandData, представляющий собой данные команды для выполнения.
-     */
+/**
+ * Интерпретирует строку команды из скрипта, создавая CommandData для последующего выполнения.
+ *
+ * @param commandLine Строка команды для интерпретации.
+ * @param scanner     Scanner, используемый для чтения дополнительных данных команды из скрипта.
+ * @return Объект CommandData, представляющий собой данные команды для выполнения.
+ */
 
-    private CommandData interpretCommandLine(String commandLine, Scanner scanner) {
-        String[] parts = commandLine.split("\\s+");
-        String commandName = parts[0].toLowerCase();
-        List<CommandArgument> arguments = new ArrayList<>();
-        LabWork labWork;
-        String serializedLabWork;
-        switch (commandName) {
-            case "add":
-            case "add_if_min":
-            case "remove_lower":
-            case "remove_greater":
-                labWork = readLabWorkFromScript(scanner);
+
+private CommandData interpretCommandLine(String commandLine, Scanner scanner) {
+    String[] parts = commandLine.split("\\s+");
+    String commandName = parts[0].toLowerCase();
+    List<CommandArgument> arguments = new ArrayList<>();
+    LabWork labWork;
+    String serializedLabWork;
+    switch (commandName) {
+        case "add":
+        case "add_if_min":
+        case "remove_lower":
+        case "remove_greater":
+            labWork = readLabWorkFromScript(scanner);
+            serializedLabWork = serializeLabWork(labWork);
+            arguments.add(new CommandArgument("labWork", "LabWork", serializedLabWork));
+            break;
+        case "update":
+            if (parts.length > 1) {
+                long id = Long.parseLong(parts[1]); // Получаем ID прямо из аргументов команды
+                labWork = readLabWorkFromScript(scanner); // Считываем данные для LabWork из последующих строк
                 serializedLabWork = serializeLabWork(labWork);
+                arguments.add(new CommandArgument("id", "Long", String.valueOf(id)));
                 arguments.add(new CommandArgument("labWork", "LabWork", serializedLabWork));
-                break;
-            case "update":
-                if (parts.length > 1) {
-                    long id = Long.parseLong(parts[1]); // Получаем ID прямо из аргументов команды
-                    labWork = readLabWorkFromScript(scanner); // Считываем данные для LabWork из последующих строк
-                    serializedLabWork = serializeLabWork(labWork);
-                    arguments.add(new CommandArgument("id", "Long", String.valueOf(id)));
-                    arguments.add(new CommandArgument("labWork", "LabWork", serializedLabWork));
-                }
-                break;
-            case "remove_by_id":
-                if (parts.length > 1) {
-                    long id = Long.parseLong(parts[1]); // Аналогично получаем ID для remove_by_id
-                    arguments.add(new CommandArgument("id", "Long", String.valueOf(id)));
-                }
-                break;
-        }
-
-        return new CommandData(commandName, arguments);
+            }
+            break;
+        case "remove_by_id":
+            if (parts.length > 1) {
+                long id = Long.parseLong(parts[1]); // Аналогично получаем ID для remove_by_id
+                arguments.add(new CommandArgument("id", "Long", String.valueOf(id)));
+            }
+            break;
     }
+
+    return new CommandData(commandName, arguments, false, "", "");
+}
 
 
     /**
@@ -148,9 +149,9 @@ public class ExecuteScriptCommand extends Command {
         discipline.setName(disciplineName);
         discipline.setPracticeHours(practiceHours);
         discipline.setSelfStudyHours(selfStudyHours);
+        String author = "";
 
-
-        return new LabWork(IdGenerator.generateUniqueId(), name, coordinates, new Date(), minimalPoint, maximumPoint, difficulty, discipline);
+        return new LabWork(IdGenerator.generateUniqueId(), name, coordinates, new Date(), minimalPoint, maximumPoint, difficulty, discipline, author);
     }
 
 

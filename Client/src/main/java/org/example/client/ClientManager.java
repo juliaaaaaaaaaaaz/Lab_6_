@@ -7,6 +7,11 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 /**
  * Управляет соединением клиента с сервером через UDP, используя неблокирующий ввод/вывод.
@@ -64,21 +69,43 @@ public class ClientManager {
      *
      * @return Объект {@code Response}, содержащий данные ответа сервера.
      */
-    public Response receiveResponse() {
-        ByteBuffer buffer = ByteBuffer.allocate(20000);
-        try {
-            while (channel.receive(buffer) == null) {
-                Thread.yield(); // Wait for data to be ready
+    public Response receiveResponse() throws IOException, ClassNotFoundException, TimeoutException {
+        Map<Integer, String> parts = new HashMap<>();
+        int receivedPackets = 0;
+        int totalPackets = -1;
+
+        long start = System.currentTimeMillis();
+        while (receivedPackets < totalPackets || totalPackets == -1) {
+            if (System.currentTimeMillis() - start > TimeUnit.SECONDS.toMillis(5)) {
+                throw new TimeoutException("Timeout waiting for the server response.");
             }
-            buffer.flip();
-            ByteArrayInputStream byteStream = new ByteArrayInputStream(buffer.array(), buffer.position(), buffer.limit());
-            ObjectInputStream is = new ObjectInputStream(byteStream);
-            return (Response) is.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Receiving response failed: " + e.getMessage());
-            return new Response(false, "Error receiving response.");
+
+            ByteBuffer buffer = ByteBuffer.allocate(2048);
+            if (channel.receive(buffer) != null) {
+                buffer.flip();
+                ByteArrayInputStream byteStream = new ByteArrayInputStream(buffer.array(), buffer.position(), buffer.limit());
+                ObjectInputStream is = new ObjectInputStream(byteStream);
+                Response response = (Response) is.readObject();
+
+                if (response.totalPackets() > 0) {
+                    parts.put(response.packetNumber(), response.message());
+                    receivedPackets++;
+                    if (totalPackets == -1) {
+                        totalPackets = response.totalPackets();
+                    }
+                }
+            }
         }
+
+        String fullMessage = parts.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .collect(Collectors.joining());
+
+
+        return new Response(true, fullMessage, 0, 1);
     }
+
 
     /**
      * Закрывает соединение с сервером и освобождает ресурсы.

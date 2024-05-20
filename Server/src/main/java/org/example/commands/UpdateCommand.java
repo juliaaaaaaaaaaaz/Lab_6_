@@ -2,9 +2,12 @@ package org.example.commands;
 
 
 import org.example.data.LabWork;
+import org.example.utils.DataBaseManipulator;
 import org.example.utils.LabWorkCollection;
+import org.example.utils.LabWorkDataBase;
 
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * Команда для обновления объекта LabWork в коллекции по указанному ID.
@@ -12,14 +15,19 @@ import java.util.List;
  */
 public class UpdateCommand extends Command {
     private final LabWorkCollection labWorkCollection;
+    private DataBaseManipulator dataBaseManipulator;
+    private final ReadWriteLock READWRITELOCK;
 
     /**
      * Конструктор команды для обновления объекта.
      *
      * @param labWorkCollection Коллекция, в которой будет обновлен объект.
+     * @param READWRITELOCK
      */
-    public UpdateCommand(LabWorkCollection labWorkCollection) {
+    public UpdateCommand(LabWorkCollection labWorkCollection, DataBaseManipulator dataBaseManipulator, ReadWriteLock READWRITELOCK) {
         this.labWorkCollection = labWorkCollection;
+        this.dataBaseManipulator = dataBaseManipulator;
+        this.READWRITELOCK = READWRITELOCK;
     }
 
     /**
@@ -30,19 +38,28 @@ public class UpdateCommand extends Command {
      */
     @Override
     public String execute(List<Object> args) {
-        if (args.size() < 2 || !(args.get(0) instanceof Long)) {
-            return "Invalid arguments for update command.";
-        }
-
+        READWRITELOCK.writeLock().lock();
         try {
-            long id = (Long) args.get(0);
-            LabWork updatedLabWork = (LabWork) args.get(1); // Убедитесь, что аргумент действительно LabWork
+            if (args.size() < 2 || !(args.get(0) instanceof Long)) {
+                return "Invalid arguments for update command.";
+            }
 
-            boolean updated = labWorkCollection.update(id, updatedLabWork);
-
-            return updated ? "LabWork with ID " + id + " updated successfully." : "LabWork with ID " + id + " not found.";
-        } catch (ClassCastException e) {
-            return "Error updating lab work: " + e.getMessage();
+            try {
+                long id = (Long) args.get(0);
+                LabWork updatedLabWork = (LabWork) args.get(1); // Убедитесь, что аргумент действительно LabWork
+                if (labWorkCollection.checkAuthor(id)) {
+                    LabWorkDataBase labWorkDataBase = new LabWorkDataBase(dataBaseManipulator);
+                    boolean updated = false;
+                    if (labWorkDataBase.update(id, updatedLabWork))
+                        updated = labWorkCollection.update(id, updatedLabWork);
+                    labWorkDataBase = null;
+                    return updated ? "LabWork with ID " + id + " updated successfully." : "LabWork with ID " + id + " not found.";
+                } else return "Element hasn`t been updated. Check author";
+            } catch (ClassCastException e) {
+                return "Error updating lab work: " + e.getMessage();
+            }
+        } finally {
+            READWRITELOCK.writeLock().unlock();
         }
     }
 }

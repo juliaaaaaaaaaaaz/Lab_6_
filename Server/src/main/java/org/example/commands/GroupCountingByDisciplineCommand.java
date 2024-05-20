@@ -5,6 +5,7 @@ import org.example.utils.LabWorkCollection;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -13,15 +14,18 @@ import java.util.stream.Collectors;
 
 public class GroupCountingByDisciplineCommand extends Command {
     private final LabWorkCollection labWorkCollection;
+    private final ReadWriteLock READWRITELOCK;
 
     /**
      * Конструктор для команды группировки и подсчета объектов LabWork по дисциплинам.
      *
      * @param labWorkCollection Коллекция объектов LabWork для обработки.
+     * @param READWRITELOCK
      */
 
-    public GroupCountingByDisciplineCommand(LabWorkCollection labWorkCollection) {
+    public GroupCountingByDisciplineCommand(LabWorkCollection labWorkCollection, ReadWriteLock READWRITELOCK) {
         this.labWorkCollection = labWorkCollection;
+        this.READWRITELOCK = READWRITELOCK;
     }
 
     /**
@@ -33,11 +37,16 @@ public class GroupCountingByDisciplineCommand extends Command {
 
     @Override
     public String execute(List<Object> args) {
-        Map<String, Long> counting = labWorkCollection.getLabWorks().stream()
-                .collect(Collectors.groupingBy(labWork -> labWork.getDiscipline().getName(), Collectors.counting()));
+        READWRITELOCK.readLock().lock();
+        try {
+            Map<String, Long> counting = labWorkCollection.getLabWorks().stream()
+                    .collect(Collectors.groupingBy(labWork -> labWork.getDiscipline().getName(), Collectors.counting()));
 
-        return counting.entrySet().stream()
-                .map(entry -> entry.getKey() + ": " + entry.getValue())
-                .collect(Collectors.joining("\n"));
+            return counting.entrySet().stream()
+                    .map(entry -> entry.getKey() + ": " + entry.getValue())
+                    .collect(Collectors.joining("\n"));
+        } finally {
+            READWRITELOCK.readLock().unlock();
+        }
     }
 }

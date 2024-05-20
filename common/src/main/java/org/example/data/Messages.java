@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum Messages {
     LAB_WORK_SUCCESS_ADD("Lab work added successfully."),
     LAB_WORK_SUCCESS_CLEAR("Lab work collection cleared successfully."),
+    LAB_WORK_NOT_SUCCESS_CLEAR("Lab work collection hasn`t been cleared."),
     LAB_WORK_SUCCESS_SAVE("Lab work collection saved successfully."),
     WELCOME("Welcome to the LabWork Manager!"),
     ENTER_HELP("Enter 'help' for the list of available commands."),
@@ -44,7 +45,15 @@ public enum Messages {
     NO_LAB_WORK_FOUND_WITH_THE_PROVIDED_ID("No lab work found with the provided id."),
     SCRIPT_SUCCESS("Script executed successfully."),
     LAB_WORK_SUCCESS_ADD_IF_MIN("New lab work added as it has the minimum practice hours."),
-    LAB_WORK_NOT_MIN("Lab work not added as it does not have the minimum practice hours.");
+    LAB_WORK_NOT_SUCCESS_CHANGE("Something is going wrong with data base. Try later"),
+    LAB_WORK_NOT_MIN("Lab work not added as it does not have the minimum practice hours."),
+
+    LOGIN_SUCCESS("Login successful"),
+    REGISTRATION_SUCCESS("Registration successful"),
+    ERROR_IN_LOGIN_OR_PASSWORD("Invalid login or password"),
+    USER_ALREADY_EXISTS("User with this name is already exists"),
+
+    CONNECTION_TO_DB_FAILED("Error. Connection to DB failed. try later");
 
     private final String message;
 
