@@ -24,14 +24,14 @@ public class ArgCommand implements Command {
     }
 
     @Override
-    public void execute(ClientManager clientManager, String userName, String pswd) {
+    public String execute(ClientManager clientManager, String userName, String pswd) {
         try {
             CommandData commandData = prepareData(userName, pswd);
             clientManager.sendCommand(commandData);
             Response response = clientManager.receiveResponse();
-            System.out.println("Server response: " + response.message());
+            return response.message();
         } catch (Exception e) {
-            System.out.println("An error occurred while executing the command: " + e.getMessage());
+            return "An error occurred while executing the command: " + e.getMessage();
         }
     }
 }

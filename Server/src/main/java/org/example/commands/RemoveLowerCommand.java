@@ -60,7 +60,7 @@ public class RemoveLowerCommand extends Command {
                         labWork.getMinimalPoint() < comparisonLabWork.getMinimalPoint()
         );*/
 
-            return Messages.REMOVED.getMessage() + removedCount + Messages.ELEMENTS_LOWER.getMessage();
+            return String.valueOf(removedCount);
         } finally {
             READWRITELOCK.writeLock().unlock();
         }

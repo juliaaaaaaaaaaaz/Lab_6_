@@ -33,7 +33,7 @@ public class ShowCommand extends Command {
     @Override
     public String execute(List<Object> args) {
         READWRITELOCK.readLock().lock();
-        System.out.println(labWorkCollection.show());
+        labWorkCollection.show();
         try {
             if (labWorkCollection.show().equals(""))
                 return "Collection is empty";

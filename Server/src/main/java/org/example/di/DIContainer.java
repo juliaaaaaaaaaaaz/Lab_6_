@@ -57,7 +57,6 @@ public class DIContainer {
         commands.put("remove_by_id", new RemoveByIdCommand(labWorkCollection, dataBaseManipulator, READWRITELOCK));
         commands.put("remove_greater", new RemoveGreaterCommand(labWorkCollection, dataBaseManipulator, READWRITELOCK));
         commands.put("remove_lower", new RemoveLowerCommand(labWorkCollection, dataBaseManipulator, READWRITELOCK));
-//        commands.put("save", new SaveCommand(labWorkCollection));
         commands.put("show", new ShowCommand(labWorkCollection, READWRITELOCK));
         commands.put("update", new UpdateCommand(labWorkCollection, dataBaseManipulator, READWRITELOCK));
         commands.put("add_if_min", new AddIfMinCommand(labWorkCollection, dataBaseManipulator, READWRITELOCK));

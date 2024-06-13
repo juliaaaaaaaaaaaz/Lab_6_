@@ -54,7 +54,7 @@ public class RemoveGreaterCommand extends Command {
         /*int removed = labWorkCollection.removeIf(labWork ->
                 labWork.getDiscipline().getPracticeHours() > comparisonLabWork.getDiscipline().getPracticeHours());*/
 
-            return String.format(Messages.REMOVED_D_ELEMENTS.getMessage(), removed);
+            return String.valueOf(removed);
         } finally {
             READWRITELOCK.writeLock().unlock();
         }

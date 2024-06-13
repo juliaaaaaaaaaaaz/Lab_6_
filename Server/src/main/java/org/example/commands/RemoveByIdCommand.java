@@ -58,7 +58,7 @@ public class RemoveByIdCommand extends Command {
                         return removed ? "Lab work removed successfully." : "No lab work found with the provided id.";
                     }
                 }
-                return "Element hasn`t been removed. Check author";
+                return "Element hasnt been removed. Check author.";
 
             } catch (NumberFormatException e) {
                 return "Invalid ID format. Please enter a valid number.";

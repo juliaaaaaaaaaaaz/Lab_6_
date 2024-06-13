@@ -61,7 +61,6 @@ public class AddCommand extends Command {
             if (!labWorkDataBase.addElement(labWork))
                 return Messages.LAB_WORK_NOT_SUCCESS_CHANGE.getMessage();
             labWork.setId(labWorkDataBase.getMaxId());
-            labWork.setAuthor(dataBaseManipulator.getUserName());
             labWorkCollection.add(labWork);
             labWorkDataBase = null;
             return Messages.LAB_WORK_SUCCESS_ADD.getMessage();

@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum Messages {
     LAB_WORK_SUCCESS_ADD("Lab work added successfully."),
     LAB_WORK_SUCCESS_CLEAR("Lab work collection cleared successfully."),
-    LAB_WORK_NOT_SUCCESS_CLEAR("Lab work collection hasn`t been cleared."),
+    LAB_WORK_NOT_SUCCESS_CLEAR("Lab work collection hasnt been cleared."),
     LAB_WORK_SUCCESS_SAVE("Lab work collection saved successfully."),
     WELCOME("Welcome to the LabWork Manager!"),
     ENTER_HELP("Enter 'help' for the list of available commands."),
@@ -35,7 +35,7 @@ public enum Messages {
     COMMAND_NOT_RECOGNIZED("Command not recognized."),
     ERROR_UPDATING_LABWORK("Error updating lab work: "),
     LAB_WORK_WITH_ID("Lab work with ID "),
-    UPDATE_SUCCESS(" updated successfully."),
+    UPDATE_SUCCESS("Updated successfully."),
     UPDATE_FAILED("Failed to update lab work with ID "),
     REMOVED("Removed "),
     ELEMENTS_LOWER(" elements lower than the provided lab work."),

@@ -37,6 +37,22 @@ public class LabWork implements Serializable {
     }
 
     public String detailedToString() {
+        return id + " "
+                + name + " "
+                + coordinates.getX() + " "
+                + coordinates.getY() + " "
+                + creationDate + " "
+                + minimalPoint + " "
+                + maximumPoint + " "
+                + difficulty + " "
+                + discipline.getName() + " "
+                + discipline.getPracticeHours() + " "
+                + discipline.getSelfStudyHours() + " "
+                + author;
+    }
+
+    @Override
+    public String toString() {
         return "LabWork{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
@@ -46,7 +62,7 @@ public class LabWork implements Serializable {
                 ", maximumPoint=" + maximumPoint +
                 ", difficulty=" + difficulty +
                 ", discipline=" + discipline +
-                ", author=" + author +
+                ", author='" + author + '\'' +
                 '}';
     }
 }

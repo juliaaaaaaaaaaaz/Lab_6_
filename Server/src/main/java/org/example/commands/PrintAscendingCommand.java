@@ -35,10 +35,14 @@ public class PrintAscendingCommand extends Command {
     public String execute(List<Object> args) {
         READWRITELOCK.readLock().lock();
         try {
-            return labWorkCollection.getLabWorks().stream()
-                    .sorted(Comparator.comparingInt(lw -> lw.getDiscipline().getPracticeHours()))
-                    .map(LabWork::detailedToString)
-                    .collect(Collectors.joining("\n"));
+            if (!labWorkCollection.getLabWorks().isEmpty()) {
+                return labWorkCollection.getLabWorks().stream()
+                        .sorted(Comparator.comparingInt(lw -> lw.getDiscipline().getPracticeHours()))
+                        .map(LabWork::toString)
+                        .collect(Collectors.joining("\n"));
+            } else {
+                return "collection is empty";
+            }
         } finally {
             READWRITELOCK.readLock().unlock();
         }

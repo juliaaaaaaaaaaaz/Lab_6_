@@ -45,7 +45,7 @@ public class CommandExecutor {
             // Это изменение обеспечивает, что ID правильно обрабатывается и передаётся в команды.
             return command.execute(commandArgs);
         } catch (Exception e) {
-            return "Error executing command: " + e.getMessage();
+            return e.getMessage();
         }
     }
 

@@ -107,10 +107,6 @@ public class ServerManager {
      */
     private void handleServerCommand(String command) {
         switch (command) {
-            case "save":
-                diContainer.getService(LabWorkCollection.class).saveToFile();
-                LOGGER.info("Collection saved to file.");
-                break;
             case "exit":
                 running = false;
                 socket.close();
@@ -157,6 +153,7 @@ public class ServerManager {
     private DatagramPacket receivePacket() throws IOException, ExecutionException, InterruptedException { //чтение
         if (!running) return null; // Возвращаем null, если сервер остановлен
         return FIXEDTHREADPOOL.submit(() -> {
+
             try {
                 byte[] buffer = new byte[2048];
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length);

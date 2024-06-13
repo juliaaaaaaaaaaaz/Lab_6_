@@ -21,8 +21,8 @@ public class LabWorkCommand implements Command {
     private final Scanner scanner;
     private final LabWorkReader labWorkReader;
 
-    public LabWorkCommand(String argument, Scanner scanner) {
-        this.commandName = "add";
+    public LabWorkCommand(String commandName, Scanner scanner) {
+        this.commandName = commandName;
         this.scanner = scanner;
         this.labWorkReader = new LabWorkReader(new Validator());
     }
@@ -46,14 +46,14 @@ public class LabWorkCommand implements Command {
     }
 
     @Override
-    public void execute(ClientManager clientManager, String userName, String pswd) {
+    public String execute(ClientManager clientManager, String userName, String pswd) {
         try {
             CommandData commandData = prepareData(userName, pswd);
             clientManager.sendCommand(commandData);
             Response response = clientManager.receiveResponse();
-            System.out.println("Server response: " + response.message());
+            return response.message();
         } catch (Exception e) {
-            System.out.println("An error occurred while executing the command: " + e.getMessage());
+            return "Wrong data, check all fields again";
         }
     }
 }

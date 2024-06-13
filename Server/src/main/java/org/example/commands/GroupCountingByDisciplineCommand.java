@@ -39,12 +39,16 @@ public class GroupCountingByDisciplineCommand extends Command {
     public String execute(List<Object> args) {
         READWRITELOCK.readLock().lock();
         try {
-            Map<String, Long> counting = labWorkCollection.getLabWorks().stream()
-                    .collect(Collectors.groupingBy(labWork -> labWork.getDiscipline().getName(), Collectors.counting()));
+            if (!labWorkCollection.getLabWorks().isEmpty()) {
+                Map<String, Long> counting = labWorkCollection.getLabWorks().stream()
+                        .collect(Collectors.groupingBy(labWork -> labWork.getDiscipline().getName(), Collectors.counting()));
 
-            return counting.entrySet().stream()
-                    .map(entry -> entry.getKey() + ": " + entry.getValue())
-                    .collect(Collectors.joining("\n"));
+                return counting.entrySet().stream()
+                        .map(entry -> entry.getKey() + ": " + entry.getValue())
+                        .collect(Collectors.joining("\n"));
+            } else {
+                return "collection is empty";
+            }
         } finally {
             READWRITELOCK.readLock().unlock();
         }

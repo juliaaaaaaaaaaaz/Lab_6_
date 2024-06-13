@@ -1,8 +1,10 @@
 package org.example.utils;
 
+import org.example.NewClasses.Application;
 import org.example.data.*;
 import org.example.exceptions.ValidationException;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Locale;
 import java.util.function.Supplier;
@@ -33,7 +35,6 @@ public class LabWorkReader {
 
     private String readName(Supplier<String> inputSupplier) {
         while (true) {
-            System.out.print(Messages.ENTER_NAME.getMessage());
             String name = inputSupplier.get();
             try {
                 validator.validateName(name);
@@ -48,9 +49,7 @@ public class LabWorkReader {
     private Coordinates readCoordinates(Supplier<String> inputSupplier) {
         while (true) {
             try {
-                System.out.print(Messages.ENTER_X.getMessage());
                 float x = Float.parseFloat(inputSupplier.get().trim());
-                System.out.print(Messages.ENTER_Y.getMessage());
                 double y = Double.parseDouble(inputSupplier.get().trim());
                 Coordinates coordinates = new Coordinates();
                 coordinates.setX(x);
@@ -66,7 +65,6 @@ public class LabWorkReader {
     private long readMaximumPoint(Supplier<String> inputSupplier) {
         while (true) {
             try {
-                System.out.print(Messages.ENTER_MAX_POINT.getMessage());
                 long maxPoint = Long.parseLong(inputSupplier.get().trim());
                 validator.validateMaximumPoint(maxPoint);
                 return maxPoint;
@@ -78,7 +76,6 @@ public class LabWorkReader {
     }
 
     private Difficulty readDifficulty(Supplier<String> inputSupplier) {
-        System.out.print(Messages.ENTER_DIFFICULTY.getMessage());
         while (true) {
             String input = inputSupplier.get().trim();
             try {
@@ -93,7 +90,6 @@ public class LabWorkReader {
 
 
     private int readPracticeHours(Supplier<String> inputSupplier) {
-        System.out.print(Messages.ENTER_PRACTICE_HOURS.getMessage());
         while (true) {
             try {
                 return Integer.parseInt(inputSupplier.get().trim());
@@ -106,7 +102,6 @@ public class LabWorkReader {
     private Discipline readDiscipline(Supplier<String> inputSupplier) {
         while (true) {
             try {
-                System.out.print(Messages.ENTER_DISCIPLINE.getMessage());
                 String name = inputSupplier.get().trim();
                 int practiceHours = readPracticeHours(inputSupplier);
                 int selfStudyHours = (int) readSelfStudyHours(inputSupplier);
@@ -126,12 +121,10 @@ public class LabWorkReader {
     private long readSelfStudyHours(Supplier<String> inputSupplier) {
         while (true) {
             try {
-                System.out.print(Messages.ENTER_SELF_STUDY_HOURS.getMessage());
                 long value = Long.parseLong(inputSupplier.get());
                 validator.validateSelfStudyHours(value);
                 return value;
             } catch (NumberFormatException e) {
-                System.out.println(Messages.INVALID_NUMBER.getMessage());
             } catch (ValidationException e) {
                 System.out.println(e.getMessage());
             }
@@ -139,7 +132,6 @@ public class LabWorkReader {
     }
 
     private long readMinimalPoint(Supplier<String> inputSupplier) {
-        System.out.print(Messages.ENTER_MINIMAL_POINT.getMessage());
         while (true) {
             try {
                 long point = Long.parseLong(inputSupplier.get().trim());
@@ -165,7 +157,7 @@ public class LabWorkReader {
         long maximumPoint = readMaximumPoint(inputSupplier);
         Difficulty difficulty = readDifficulty(inputSupplier);
         Discipline discipline = readDiscipline(inputSupplier);
-        String author = "";
+        String author = Application.getLogin();
         return new LabWork(id, name, coordinates, creationDate, minimalPoint, maximumPoint, difficulty, discipline, author);
     }
 }

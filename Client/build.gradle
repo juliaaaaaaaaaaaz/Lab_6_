@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 
 }
@@ -16,9 +17,16 @@ compileJava.options.encoding = 'UTF-8'
 dependencies {
     implementation(project(":common"))
 
-
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.base.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.controls.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.fxml.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.graphics.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.media.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.swing.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx.web.jar')
+    implementation files('D:/javafx-sdk-22.0.1/lib/javafx-swt.jar')
 }
 
 test {
@@ -35,4 +43,13 @@ shadowJar {
     archiveBaseName = 'client'
     archiveVersion = '1.0-SNAPSHOT'
     archiveClassifier = ''
+}
+
+application {
+    mainClass = 'org.example.Main'
+
+    applicationDefaultJvmArgs = [
+            '--module-path', '/Library/Java/JavaVirtualMachines/javafx-sdk-22.0.1/lib',
+            '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web,javafx.swt'
+    ]
 }

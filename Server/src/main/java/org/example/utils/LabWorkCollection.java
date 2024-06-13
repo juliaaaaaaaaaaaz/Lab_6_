@@ -47,12 +47,6 @@ public class LabWorkCollection {
         }
     }
 
-    /**
-     * Сохраняет текущее состояние коллекции в файл.
-     */
-    public void saveToFile() {
-        JsonUtil.saveToFile(labWorkSet, fileName);
-    }
 
     /**
      * Добавляет новый объект LabWork в коллекцию.
@@ -89,7 +83,7 @@ public class LabWorkCollection {
     public String show() {
         return labWorkSet.stream()
                 .map(LabWork::detailedToString)
-                .collect(Collectors.joining("\n\n"));
+                .collect(Collectors.joining("/"));
     }
 
     /**

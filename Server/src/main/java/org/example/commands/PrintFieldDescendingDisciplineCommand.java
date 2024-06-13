@@ -35,11 +35,15 @@ public class PrintFieldDescendingDisciplineCommand extends Command {
     public String execute(List<Object> args) {
         READWRITELOCK.readLock().lock();
         try {
-            return labWorkCollection.getLabWorks().stream()
-                    .filter(labWork -> labWork.getDiscipline() != null)
-                    .sorted(Comparator.comparingInt((LabWork lw) -> lw.getDiscipline().getPracticeHours()).reversed())
-                    .map(lw -> lw.getDiscipline().getName() + " - Practice hours: " + lw.getDiscipline().getPracticeHours())
-                    .collect(Collectors.joining("\n"));
+            if (!labWorkCollection.getLabWorks().isEmpty()) {
+                return labWorkCollection.getLabWorks().stream()
+                        .filter(labWork -> labWork.getDiscipline() != null)
+                        .sorted(Comparator.comparingInt((LabWork lw) -> lw.getDiscipline().getPracticeHours()).reversed())
+                        .map(lw -> lw.getDiscipline().getName() + " - Practice hours: " + lw.getDiscipline().getPracticeHours())
+                        .collect(Collectors.joining("\n"));
+            } else {
+                return "collection is empty";
+            }
         } finally {
             READWRITELOCK.readLock().unlock();
         }

@@ -54,7 +54,7 @@ public class UpdateCommand extends Command {
                         updated = labWorkCollection.update(id, updatedLabWork);
                     labWorkDataBase = null;
                     return updated ? "LabWork with ID " + id + " updated successfully." : "LabWork with ID " + id + " not found.";
-                } else return "Element hasn`t been updated. Check author";
+                } else return "Element_hasnt_been_updated_you_are_not_author_or_the_lab_doesnt_exist.";
             } catch (ClassCastException e) {
                 return "Error updating lab work: " + e.getMessage();
             }
